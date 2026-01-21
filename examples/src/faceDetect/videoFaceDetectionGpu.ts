@@ -1,6 +1,7 @@
 import { Mat } from '@u4/opencv4nodejs';
-import { cv, getResourcePath } from '../utils';
-import { runVideoFaceDetection } from './commons';
+import { cv, getResourcePath } from '../utils.js';
+import { runVideoFaceDetection } from './commons.js';
+
 if (cv.version.minor === 4) {
   console.log('Warning: It seems like opencv 3.4 does not run the opencl version of detectMultiScale.');
 }
@@ -14,7 +15,7 @@ function detectFaces(img: Mat) {
     scaleFactor: 1.1,
     minNeighbors: 10,
   };
-  return classifier.detectMultiScaleGpu(img.bgrToGray(), options);// .objects;
+  return classifier.detectMultiScaleGpu(img.bgrToGray(), options).objects;
 }
 
 runVideoFaceDetection(videoFile, detectFaces);

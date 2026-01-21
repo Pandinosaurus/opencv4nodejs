@@ -5,34 +5,42 @@ name: publish on npmjs
 
 on:
   release:
-    types: [created]
+    types: [ created ]
   workflow_dispatch:
 
 env:
-  OPENCV_INCLUDE_DIR: /usr/include/opencv4/
-  OPENCV_LIB_DIR: /usr/lib/x86_64-linux-gnu/
-  OPENCV_BIN_DIR: /usr/bin/
+  # OPENCV_INCLUDE_DIR: /usr/include/opencv4/
+  # OPENCV_LIB_DIR: /usr/lib/x86_64-linux-gnu/
+  # OPENCV_BIN_DIR: /usr/bin/
   OPENCV4NODEJS_DISABLE_AUTOBUILD: 1
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: run apt-get update
+        run: sudo apt-get update
       - name: Install libopencv
         run: sudo apt-get install -y libopencv-dev libopencv-features2d-dev
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
         with:
-          version: 7.3.0
-      - uses: actions/setup-node@v3
+          version: 9.3.0
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
           registry-url: https://registry.npmjs.org/
           cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run prepack
-      - run: cd test && pnpm install --frozen-lockfile
-      - run: cd test && pnpm run test
+      - name: Install dependencies using pnpm
+        run: pnpm install --frozen-lockfile
+      - name: build CJS + ESM files
+        run: pnpm run prepack
+      - name: build native modules using node-gyp
+        run: pnpm run rebuild
+      - name: Prepare tests
+        run: cd test && pnpm install --frozen-lockfile
+      - name: run tests
+        run: cd test && pnpm run test
       - run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

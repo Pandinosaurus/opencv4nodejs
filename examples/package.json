@@ -2,24 +2,29 @@
   "name": "opencv4nodejs-examples",
   "version": "0.0.0",
   "description": "example for opencv4nodejs",
-  "main": "EASTTextDetection.js",
+  "main": "src/EASTTextDetection.js",
+  "type": "module",
   "scripts": {
-    "clean": "rimraf src/**/*.js src/**/*.map *.js.map *.js *.log"
+    "clean": "rimraf src/*.js src/**/*.js src/**/*.map *.js.map *.js *.log"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@types/lodash.samplesize": "^4.2.7",
+    "@types/lodash.samplesize": "^4.2.9",
     "@u4/opencv4nodejs": "link:..",
+    "axios": "^1.6.8",
     "lodash.samplesize": "^4.2.0",
     "mri": "^1.2.0",
-    "p-limit": "3.1.0"
+    "p-limit": "5.0.0",
+    "picocolors": "^1.0.0",
+    "progress": "^2.0.3"
   },
   "devDependencies": {
-    "@types/node": "^18.0.0",
-    "@types/rimraf": "^3.0.2",
-    "rimraf": "^3.0.2",
-    "ts-node": "^10.8.1",
-    "typescript": "^4.7.4"
+    "@types/mri": "^1.2.0",
+    "@types/node": "^20.12.7",
+    "@types/progress": "^2.0.7",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }

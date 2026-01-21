@@ -1,11 +1,21 @@
 {
-  "extends": ["eslint:recommended", "airbnb"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/eslint-recommended", "plugin:@typescript-eslint/recommended"],
   "rules": {
-    "linebreak-style": [
-      "error",
-      "windows"
-    ],
+    "linebreak-style": 0,
     "comma-dangle": ["error", "always-multiline"],
+    "quotes": [2, "single", { "avoidEscape": true }],
     "no-plusplus": "off",
     "func-names": 0,
     "import/no-unresolved": 0,
@@ -14,13 +24,13 @@
     "no-underscore-dangle": 0,
     "no-nested-ternary": 0,
     "radix": 0,
-
     // unit tests only
     "max-len" : 0,
     "no-new" : 0,
     "no-unused-expressions": 0,
-    "prefer-spread": 0
-
+    "prefer-spread": 0,
+    "@typescript-eslint/ban-ts-comment": 0,
+    "@typescript-eslint/no-explicit-any": 0
   },
   "env": {
     "es6": true,

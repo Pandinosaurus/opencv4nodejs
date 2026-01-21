@@ -1,17 +1,18 @@
 name: Build all from source
 
 on:
-  # push:
+  #push:
   #   branches: [ "master" ]
   # pull_request:
   #   branches: [ "master" ]
   workflow_dispatch:
     # Inputs the workflow accepts.
     inputs:
-      name:
+      cv_version:
         description: 'build all from source'
-        default: '4.6.0'
+        default: '4.9.0'
         required: true
+        type: string
 
 env:
   SOLUTION_FILE_PATH: .
@@ -25,31 +26,34 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: pnpm/action-setup@v2
+    - uses: actions/checkout@v4
+    - uses: pnpm/action-setup@v3
       with:
-        version: 7.3.0
-    - uses: actions/setup-node@v3
+        version: 9.3.0
+    - uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 20
         cache: 'pnpm'
     
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v2
 
     - name: run pnpm install
       run: pnpm install --frozen-lockfile
 
-    - name: pnpm run prepack
+    - name: build CJS + ESM files
       run: pnpm run prepack
+
+    - name: build native modules using node-gyp
+      run: pnpm run rebuild
 
     - name: install deps in test
       working-directory: ./test
       run: pnpm install --frozen-lockfile
 
-    - name: build OpenCV
+    - name: build OpenCV ${{ inputs.cv_version }}
       working-directory: ./test
-      run: pnpm build-opencv --version ${{ github.event.inputs.name }} rebuild
+      run: pnpm build-opencv --version ${{ inputs.cv_version }} rebuild
 
     - name: run test-appveyor test
       working-directory: ./test

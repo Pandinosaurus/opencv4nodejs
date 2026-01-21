@@ -2,17 +2,17 @@
 	"targets": [{
 		"target_name": "opencv4nodejs",
 		"defines": [
-			"<!@(node ./install/parseEnv.js OPENCV4NODEJS_DEFINES)",
+			"<!@(node ./bin/install.js OPENCV4NODEJS_DEFINES)",
 		],
 		"include_dirs" : [
-			"<!@(node ./install/parseEnv.js OPENCV4NODEJS_INCLUDES)",
+			"<!@(node ./bin/install.js OPENCV4NODEJS_INCLUDES)",
 			"cc",
 			"cc/core",
 			"<!(node -e \"require('nan')\")",
-			"<!(node -e \"require('native-node-utils')\")"
+			"cc/native-node-utils",
 		],
 		"libraries": [
-			"<!@(node ./install/parseEnv.js OPENCV4NODEJS_LIBRARIES)",
+			"<!@(node ./bin/install.js OPENCV4NODEJS_LIBRARIES)",
 		],
 		"sources": [
 			"cc/opencv4nodejs.cc",
@@ -90,6 +90,7 @@
 			"cc/tracking/Trackers/TrackerMedianFlow.cc",
 			"cc/tracking/Trackers/TrackerTLD.cc",
 			"cc/tracking/Trackers/TrackerGOTURN.cc",
+			"cc/tracking/Trackers/TrackerNano.cc",
 			"cc/tracking/Trackers/TrackerCSRT.cc",
 			"cc/tracking/Trackers/TrackerCSRTParams.cc",
 			"cc/tracking/Trackers/TrackerMOSSE.cc",
@@ -114,26 +115,30 @@
 			"cc/xfeatures2d/xfeatures2d.cc",
 			"cc/xfeatures2d/SIFTDetector.cc",
 			"cc/xfeatures2d/SURFDetector.cc",
+			"cc/img_hash/img_hash.cc",
+			"cc/img_hash/ImgHashBase.cc",
+			"cc/img_hash/PHash.cc",
 			"cc/highgui/highgui.cc",
 			"cc/highgui/highguiConstants.cc",
 		],
-
 		"cflags" : [
-			"-std=c++14"
+			"-std=c++17",
 		],
 		"cflags!" : [
-			"-fno-exceptions"
+			"-std=c++17",
+			"-fno-exceptions",
 		],
 		"cflags_cc!": [
+			"-std=c++17",
 			"-fno-rtti",
-			"-fno-exceptions"
+			"-fno-exceptions",
 		],
 		"ldflags" : [
 			"-Wl,-rpath,'$$ORIGIN'"
 		],
 		"xcode_settings": {
 			"OTHER_CFLAGS": [
-				"-std=c++14",
+				"-std=c++17",
 				"-stdlib=libc++"
 			],
 			"GCC_ENABLE_CPP_EXCEPTIONS": "YES",
@@ -158,6 +163,10 @@
 			}],
 	        ["OS==\"mac\"",
 	          {
+				 "cflags": [
+	                 "-std=c++17",
+    	             "-Wno-error=deprecated-declarations"
+	            ],
 	            "link_settings": {
 	              "libraries": [
 					"-Wl,-rpath,@loader_path/../../../opencv-build/opencv/build/lib"
@@ -172,7 +181,6 @@
 				"cflags": ["--coverage"],
 				"ldflags": ["--coverage"]
 			},
-    }
-
+    	}
 	}]
 }

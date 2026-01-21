@@ -1,6 +1,6 @@
 import { Mat } from '@u4/opencv4nodejs';
-import { cv } from '../utils';
-import { runVideoFaceDetection } from './commons';
+import { cv } from '../utils.js';
+import { runVideoFaceDetection } from './commons.js';
 
 const classifier = new cv.CascadeClassifier(cv.HAAR_FRONTALFACE_ALT2);
 
@@ -13,7 +13,8 @@ function detectFaces(img: Mat) {
     scaleFactor: 1.2,
     minNeighbors: 10,
   };
-  return classifier.detectMultiScaleGpu(img.bgrToGray(), options); // .objects
+  const rects = classifier.detectMultiScaleGpu(img.bgrToGray(), options);
+  return rects.objects;
 }
 
 runVideoFaceDetection(webcamPort, detectFaces);

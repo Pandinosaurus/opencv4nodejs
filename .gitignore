@@ -11,7 +11,6 @@ data/dnn
 .idea/
 dist
 .DS_Store
-native-node-utils
 */**.js.map
 examples/typed/*.js
 examples/typed/faceDetect/*.js
@@ -40,9 +39,6 @@ examples/src/AgeGender/age_net.caffemodel
 .pnpm-debug.log
 examples/data/dnn/yolo-object-detection/
 lib/src/*.map
-lib/cvloader.js
-lib/opencv4nodejs.js
-lib/promisify.js
 lib/src/*.js
 examples/src/JPEGImages/
 examples/labels/
@@ -57,3 +53,9 @@ examples/src/YOLOv3-Training-Snowman-Detector/train.log
 examples/src/YOLOv3-Training-Snowman-Detector/darknet53.conv.74
 examples/src/YOLOv3-Training-Snowman-Detector/weights
 docs/
+lib/*.d.ts.map
+install/*.d.ts.map
+esm/install/
+esm/lib/
+u4-opencv4nodejs-*.tgz
+examples/yolo_out_py.avi

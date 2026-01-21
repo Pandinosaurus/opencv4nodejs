@@ -1,4 +1,4 @@
 #!/usr/bin/env node
-
-const compileLib = require("../install/compileLib.js");
-compileLib.compileLib(process.argv);
+const compileLib = require("../cjs/install/compileLib.js");
+const {argv} = process;
+compileLib.compileLib(argv);

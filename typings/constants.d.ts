@@ -11,34 +11,47 @@ export const CV_16S: number;
 export const CV_32S: number;
 export const CV_32F: number;
 export const CV_64F: number;
+export const CV_16F: number; // NEW
+
 export const CV_8UC1: number;
 export const CV_8UC2: number;
 export const CV_8UC3: number;
 export const CV_8UC4: number;
+
 export const CV_8SC1: number;
 export const CV_8SC2: number;
 export const CV_8SC3: number;
 export const CV_8SC4: number;
+
 export const CV_16UC1: number;
 export const CV_16UC2: number;
 export const CV_16UC3: number;
 export const CV_16UC4: number;
+
 export const CV_16SC1: number;
 export const CV_16SC2: number;
 export const CV_16SC3: number;
 export const CV_16SC4: number;
+
 export const CV_32SC1: number;
 export const CV_32SC2: number;
 export const CV_32SC3: number;
 export const CV_32SC4: number;
+
 export const CV_32FC1: number;
 export const CV_32FC2: number;
 export const CV_32FC3: number;
 export const CV_32FC4: number;
+
 export const CV_64FC1: number;
 export const CV_64FC2: number;
 export const CV_64FC3: number;
 export const CV_64FC4: number;
+
+export const CV_16FC1: number;
+export const CV_16FC2: number;
+export const CV_16FC3: number;
+export const CV_16FC4: number;
 
 // TODO inject value of REDUCE_SUM REDUCE_...
 export const REDUCE_SUM: number;
@@ -73,7 +86,7 @@ export const DNN_BACKEND_OPENCV: number;
 export const DNN_BACKEND_INFERENCE_ENGINE: number;
 export const DNN_BACKEND_HALIDE: number;
 export const DNN_BACKEND_CUDA: number;
-
+export const DNN_BACKEND_WEBNN: number;
 export const DNN_TARGET_CPU: number;
 export const DNN_TARGET_OPENCL: number;
 export const DNN_TARGET_OPENCL_FP16: number;
@@ -621,6 +634,7 @@ export const INTER_CUBIC: number;
 export const INTER_LANCZOS4: number;
 export const INTER_LINEAR: number;
 export const INTER_MAX: number;
+export const INTER_LINEAR_EXACT: number;
 export const INTER_NEAREST: number;
 export const KMEANS_PP_CENTERS: number;
 export const KMEANS_RANDOM_CENTERS: number;
@@ -644,6 +658,7 @@ export const MORPH_RECT: number;
 export const MORPH_TOPHAT: number;
 export const NORM_HAMMING: number;
 export const NORM_HAMMING2: number;
+export const NORM_TYPE_MASK: number;
 export const NORM_INF: number;
 export const NORM_L1: number;
 export const NORM_L2: number;
@@ -657,6 +672,9 @@ export const REGULAR: number;
 export const RETR_CCOMP: number;
 export const RETR_EXTERNAL: number;
 export const RETR_FLOODFILL: number;
+export const CONTOURS_MATCH_I1: number;
+export const CONTOURS_MATCH_I2: number;
+export const CONTOURS_MATCH_I3: number;
 export const RETR_LIST: number;
 export const RETR_TREE: number;
 export const RHO: number;
@@ -699,25 +717,36 @@ export const IMREAD_ANYDEPTH: number;
 export const IMREAD_ANYCOLOR: number;
 export const IMREAD_LOAD_GDAL: number;
 
-export const IMWRITE_JPEG_QUALITY: number;
-export const IMWRITE_JPEG_PROGRESSIVE: number;
-export const IMWRITE_JPEG_OPTIMIZE: number;
-export const IMWRITE_JPEG_RST_INTERVAL: number;
-export const IMWRITE_JPEG_LUMA_QUALITY: number;
-export const IMWRITE_JPEG_CHROMA_QUALITY: number;
-export const IMWRITE_PNG_COMPRESSION: number;
-export const IMWRITE_PNG_STRATEGY: number;
-export const IMWRITE_PNG_BILEVEL: number;
-export const IMWRITE_PXM_BINARY: number;
-export const IMWRITE_WEBP_QUALITY: number;
+export const IMWRITE_JPEG_QUALITY: number; // 1
+export const IMWRITE_JPEG_PROGRESSIVE: number; // 2
+export const IMWRITE_JPEG_OPTIMIZE: number; // 3
+export const IMWRITE_JPEG_RST_INTERVAL: number; // 4
+export const IMWRITE_JPEG_LUMA_QUALITY: number; // 5
+export const IMWRITE_JPEG_CHROMA_QUALITY: number; // 6
+export const IMWRITE_JPEG_SAMPLING_FACTOR: number; // 7 added 2024-13-09
+export const IMWRITE_PNG_COMPRESSION: number; // 16
+export const IMWRITE_PNG_STRATEGY: number; // 17
+export const IMWRITE_PNG_BILEVEL: number; // 18
+export const IMWRITE_PXM_BINARY: number; // 32
+export const IMWRITE_EXR_TYPE: number; // (3 << 4) + 0 added 2024-13-09
+export const IMWRITE_WEBP_QUALITY: number; // 64
+export const IMWRITE_HDR_COMPRESSION: number; // (5 << 4) + 0 added 2024-13-09
+export const IMWRITE_TIFF_RESUNIT: number; // 256 added 2024-13-09
+export const IMWRITE_TIFF_XDPI: number; // 257 added 2024-13-09
+export const IMWRITE_TIFF_YDPI: number; // 258 added 2024-13-09
+export const IMWRITE_TIFF_COMPRESSION: number; // 259  added 2024-13-09
 
+export const IMWRITE_PNG_STRATEGY_DEFAULT: number; // 0
+export const IMWRITE_PNG_STRATEGY_FILTERED: number; // 1
+export const IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY: number; // 2
+export const IMWRITE_PNG_STRATEGY_RLE: number; // 3
+export const IMWRITE_PNG_STRATEGY_FIXED: number; // 4
 
-export const IMWRITE_PNG_STRATEGY_DEFAULT: number;
-export const IMWRITE_PNG_STRATEGY_FILTERED: number;
-export const IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY: number;
-export const IMWRITE_PNG_STRATEGY_RLE: number;
-export const IMWRITE_PNG_STRATEGY_FIXED: number;
-
+export const IMWRITE_JPEG_SAMPLING_FACTOR_411: number;
+export const IMWRITE_JPEG_SAMPLING_FACTOR_420: number;
+export const IMWRITE_JPEG_SAMPLING_FACTOR_422: number;
+export const IMWRITE_JPEG_SAMPLING_FACTOR_440: number;
+export const IMWRITE_JPEG_SAMPLING_FACTOR_444: number;
 
 export const IMREAD_REDUCED_GRAYSCALE_2: number;
 export const IMREAD_REDUCED_COLOR_2: number;
@@ -727,7 +756,7 @@ export const IMREAD_REDUCED_GRAYSCALE_8: number;
 export const IMREAD_REDUCED_COLOR_8: number;
 
 export const IMREAD_IGNORE_ORIENTATION: number;
-export const IMWRITE_PAM_TUPLETYPE: number;
+export const IMWRITE_PAM_TUPLETYPE: number; // 128
 export const IMWRITE_PAM_FORMAT_NULL: number;
 
 export const IMWRITE_PAM_FORMAT_BLACKANDWHITE: number;

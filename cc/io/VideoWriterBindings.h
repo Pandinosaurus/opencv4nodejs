@@ -5,130 +5,131 @@
 
 namespace VideoWriterBindings {
 
-  struct NewWorker : CatchCvExceptionWorker {
-  public:
-    std::string fileName;
-    int fourccCode;
-    double fps;
-    cv::Size2d frameSize;
-    bool isColor = true;
+struct NewWorker : CatchCvExceptionWorker {
+public:
+  std::string fileName;
+  int fourccCode;
+  double fps;
+  cv::Size2d frameSize;
+  bool isColor = true;
 
-    bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
-      return (
-        FF::StringConverter::arg(0, &fileName, info) ||
-        FF::IntConverter::arg(1, &fourccCode, info) ||
-        FF::DoubleConverter::arg(2, &fps, info) ||
-        Size::Converter::arg(3, &frameSize, info)
-      );
-    }
+  bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+    return (
+        FF::StringConverter::arg(0, &fileName, info) || FF::IntConverter::arg(1, &fourccCode, info) || FF::DoubleConverter::arg(2, &fps, info) || Size::Converter::arg(3, &frameSize, info));
+  }
 
-    bool unwrapOptionalArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
-      return FF::BoolConverter::optArg(4, &isColor, info);
-    }
+  bool unwrapOptionalArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+    return FF::BoolConverter::optArg(4, &isColor, info);
+  }
 
-    std::string executeCatchCvExceptionWorker() {
-      return "";
-    }
-  };
+  std::string executeCatchCvExceptionWorker() {
+    return "";
+  }
+};
 
-  struct GetWorker : public CatchCvExceptionWorker {
-  public:
-	  cv::VideoWriter self;
-	  GetWorker(cv::VideoWriter self) {
-		  this->self = self;
-	  }
-	  int prop;
-	  double val;
+struct GetWorker : public CatchCvExceptionWorker {
+public:
+  cv::VideoWriter self;
+  GetWorker(cv::VideoWriter self) {
+    this->self = self;
+  }
+  virtual ~GetWorker() {
+  }
+  int prop;
+  double val;
 
-    bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
-      return (
-          FF::IntConverter::arg(0, &prop, info)
-      );
-    }
+  bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+    return (
+        FF::IntConverter::arg(0, &prop, info));
+  }
 
-	  std::string executeCatchCvExceptionWorker() {
-		  val = self.get(prop);
-		  return "";
-	  }
+  std::string executeCatchCvExceptionWorker() {
+    val = self.get(prop);
+    return "";
+  }
 
-	  v8::Local<v8::Value> getReturnValue() {
-		  return FF::DoubleConverter::wrap(val);
-	  }
-  };
+  v8::Local<v8::Value> getReturnValue() {
+    return FF::DoubleConverter::wrap(val);
+  }
+};
 
-  struct SetWorker : public CatchCvExceptionWorker {
-  public:
-	  cv::VideoWriter self;
-	  SetWorker(cv::VideoWriter self) {
-		  this->self = self;
-	  }
+struct SetWorker : public CatchCvExceptionWorker {
+public:
+  cv::VideoWriter self;
+  SetWorker(cv::VideoWriter self) {
+    this->self = self;
+  }
+  virtual ~SetWorker() {
+  }
 
-	  // required fn args
-	  int prop;
-	  double value;
-	  bool ret;
+  // required fn args
+  int prop;
+  double value;
+  bool ret;
 
-	  std::string executeCatchCvExceptionWorker() {
-		  ret = this->self.set(prop, value);
-		  return "";
-	  }
+  std::string executeCatchCvExceptionWorker() {
+    ret = this->self.set(prop, value);
+    return "";
+  }
 
-	  bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
-		  return (
-			  FF::IntConverter::arg(0, &prop, info) ||
-			  FF::DoubleConverter::arg(1, &value, info)
-			  );
-	  }
+  bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+    return (
+        FF::IntConverter::arg(0, &prop, info) || FF::DoubleConverter::arg(1, &value, info));
+  }
 
-	  v8::Local<v8::Value> getReturnValue() {
-		  return Nan::New(ret);
-	  }
-  };
+  v8::Local<v8::Value> getReturnValue() {
+    return Nan::New(ret);
+  }
+};
 
-  struct FourccWorker : CatchCvExceptionWorker {
-  public:
-    std::string fourcc;
+struct FourccWorker : CatchCvExceptionWorker {
+public:
+  std::string fourcc;
 
-    int code;
+  int code;
 
-    std::string executeCatchCvExceptionWorker() {
-      code = cv::VideoWriter::fourcc(fourcc.at(0), fourcc.at(1), fourcc.at(2), fourcc.at(3));
-      return "";
-    }
+  virtual ~FourccWorker() {
+  }
 
-    v8::Local<v8::Value> getReturnValue() {
-      return FF::IntConverter::wrap(code);
-    }
+  std::string executeCatchCvExceptionWorker() {
+    code = cv::VideoWriter::fourcc(fourcc.at(0), fourcc.at(1), fourcc.at(2), fourcc.at(3));
+    return "";
+  }
 
-    bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
-      return FF::StringConverter::arg(0, &fourcc, info);
-    }
-  };
+  v8::Local<v8::Value> getReturnValue() {
+    return FF::IntConverter::wrap(code);
+  }
 
-  struct WriteWorker : CatchCvExceptionWorker {
-  public:
-    cv::VideoWriter writer;
-    WriteWorker(cv::VideoWriter writer) {
-      this->writer = writer;
-    }
+  bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+    return FF::StringConverter::arg(0, &fourcc, info);
+  }
+};
 
-    cv::Mat frame;
+struct WriteWorker : CatchCvExceptionWorker {
+public:
+  cv::VideoWriter writer;
+  WriteWorker(cv::VideoWriter writer) {
+    this->writer = writer;
+  }
+  virtual ~WriteWorker() {
+  }
 
-    std::string executeCatchCvExceptionWorker() {
-      writer.write(frame);
-      return "";
-    }
+  cv::Mat frame;
 
-    v8::Local<v8::Value> getReturnValue() {
-      return FF::BoolConverter::wrap(true);
-    }
+  std::string executeCatchCvExceptionWorker() {
+    writer.write(frame);
+    return "";
+  }
 
-    bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
-      return Mat::Converter::arg(0, &frame, info);
-    }
-  };
+  v8::Local<v8::Value> getReturnValue() {
+    return FF::BoolConverter::wrap(true);
+  }
 
+  bool unwrapRequiredArgs(Nan::NAN_METHOD_ARGS_TYPE info) {
+    return Mat::Converter::arg(0, &frame, info);
+  }
+};
 
-}
+} // namespace VideoWriterBindings
 
 #endif

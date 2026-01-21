@@ -1,5 +1,7 @@
-import path from 'path';
-import fs from 'fs';
+import path from 'node:path';
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import cv, { Mat, Rect, Vec3 } from '@u4/opencv4nodejs';
 export { default as cv } from '@u4/opencv4nodejs';
 import Axios from 'axios';
@@ -8,9 +10,18 @@ import pc from 'picocolors';
 
 export const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
+export function getExampleDirname(...names: string[]) {
+  let dir = '.';
+  dir = fileURLToPath(new URL('.', import.meta.url));
+  // dir = __dirname;
+  if (!names.length)
+    return dir;
+  return path.resolve(dir, ...names);
+}
+
 export function getCachedFile(localName: string, url: string, opts?: { notice?: string, noProgress?: boolean }): Promise<string> {
   opts = opts || {};
-  const localFile = path.resolve(__dirname, localName);
+  const localFile = getExampleDirname(localName);
   if (fs.existsSync(localFile)) {
     return Promise.resolve(localFile);
   }
@@ -30,7 +41,7 @@ export function getCachedFile(localName: string, url: string, opts?: { notice?: 
       method: 'GET',
       responseType: 'stream',
     });
-    const totalLength = headers['content-length'];
+    const totalLength = headers['content-length'] || "0";
     console.log(`Starting download ${localName}`);
     const writer = fs.createWriteStream(localFile);
     if (!opts?.noProgress) {
@@ -39,7 +50,7 @@ export function getCachedFile(localName: string, url: string, opts?: { notice?: 
         complete: '=',
         incomplete: ' ',
         renderThrottle: 1,
-        total: parseInt(totalLength),
+        total: parseInt(totalLength, 10),
       });
       data.on('data', (chunk: Buffer) => progressBar.tick(chunk.length));
     }
@@ -65,7 +76,7 @@ export function getCachedFile(localName: string, url: string, opts?: { notice?: 
  * add some helpter for examples TS
  */
 
-export const dataPath = path.resolve(__dirname, '..', '..', 'data');
+export const dataPath = getExampleDirname('..', '..', 'data');
 
 // export const getDataFilePath = (fileName: string): string => {
 //   const fullpath = path.resolve(dataPath, fileName)
@@ -77,25 +88,32 @@ export const getResourcePath = (name?: string): string => {
   return fullpath;
 };
 
-export const grabFrames = (videoFile: number | string, delay: number, onFrame: (mat: Mat) => void): void => {
+export const grabFrames = async (videoFile: number | string, kpDelay: number, onFrame: (mat: Mat, frameid: number) => void | Promise<void>): Promise<void> => {
   const cap = new cv.VideoCapture(videoFile);
   let done = false;
-  const intvl = setInterval(() => {
+  let frameid = 0;
+  //const intvl = setInterval(async () => {
+  for (; ;) {
     let frame = cap.read();
     // loop back to start on end of stream reached
     if (frame.empty) {
       cap.reset();
       frame = cap.read();
     }
-    onFrame(frame);
-
-    const key = cv.waitKey(delay);
+    frameid++;
+    const p = onFrame(frame, frameid);
+    if (p)
+      await p;
+    const key = cv.waitKey(kpDelay);
     done = key !== -1 && key !== 255;
     if (done) {
-      clearInterval(intvl);
+      //clearInterval(intvl);
       console.log('Key pressed, exiting.');
+      return;
     }
-  }, 0);
+     await delay(0);
+  }
+  //}, 0);
 };
 
 export const runVideoDetection = (src: number, detect: (mat: Mat) => void): void => {
@@ -121,7 +139,8 @@ export const drawRectAroundBlobs = (binaryImg: Mat, dstImg: Mat, minPxSize: numb
       dstImg.drawRectangle(
         new cv.Point2(x1, y1),
         new cv.Point2(x2, y2),
-        blue, thickness
+        blue,
+        thickness,
       );
     }
   }
@@ -132,11 +151,16 @@ export const drawRect = (image: Mat, rect: Rect, color: Vec3, opts = { thickness
     rect,
     color,
     opts.thickness,
-    cv.LINE_8
+    cv.LINE_8,
   );
 
+const { HEADLESS } = process.env;
 
 export async function wait4key(): Promise<'terminal' | 'window'> {
+  if (HEADLESS) {
+    await delay(100);
+    return 'terminal';
+  }
   // console.log('press a key to continue.');
   if (process.stdin.isTTY)
     process.stdin.setRawMode(true);
@@ -163,6 +187,27 @@ export async function wait4key(): Promise<'terminal' | 'window'> {
   if (process.stdin.isTTY)
     process.stdin.setRawMode(false);
   return done;
+}
+
+/**
+ * call cv.imshow() if HEADLESS is not set
+ * else display image md5
+ */
+export function cv_imshow(winName: string, img: Mat): void {
+  if (HEADLESS) {
+    const md5sum = crypto.createHash('md5');
+    const buffer = img.getData();
+    md5sum.update(buffer)
+    console.log(`display windows ${winName} MD5:${md5sum.digest('hex')}`);
+  } else {
+    return cv.imshow(winName, img);
+  }
+}
+
+export function cv_setWindowProperty(winName: string, prop_id: number, prop_value: number): void {
+  if (!HEADLESS) {
+    return cv.setWindowProperty(winName, prop_id, prop_value);
+  }
 }
 
 export const drawBlueRect = (image: Mat, rect: Rect, opts = { thickness: 2 }) =>
